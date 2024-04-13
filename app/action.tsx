@@ -10,9 +10,9 @@ import { Spinner } from '@/components/ui/spinner'
 import { Section } from '@/components/section'
 import { FollowupPanel } from '@/components/followup-panel'
 import { GenerateReview } from '@/components/generate-review'
-import { inquire, researcher, taskManager, querySuggestor } from '@/lib/agents'
+import { inquire, researcher, taskManager, querySuggestor, reviewer } from '@/lib/agents'
 
-async function submit(formData?: FormData, skip?: boolean) {
+async function submit(formData?: FormData, skip?: boolean, generateLiteratureReview?: boolean) {
   'use server'
 
   const aiState = getMutableAIState<typeof AI>()
@@ -23,8 +23,12 @@ async function submit(formData?: FormData, skip?: boolean) {
   // Get the user input from the form data
   const userInput = skip
     ? `{"action": "skip"}`
+    : generateLiteratureReview
+    ? `{"action": "generateLiteratureReview"}`
     : (formData?.get('input') as string)
   const content = skip
+    ? userInput
+    : generateLiteratureReview
     ? userInput
     : formData
     ? JSON.stringify(Object.fromEntries(formData))
@@ -40,8 +44,9 @@ async function submit(formData?: FormData, skip?: boolean) {
     uiStream.update(<Spinner />)
 
     let action: any = { object: { next: 'proceed' } }
+
     // If the user skips the task, we proceed to the search
-    if (!skip) action = await taskManager(messages)
+    if (!skip && !generateLiteratureReview) action = await taskManager(messages)
 
     if (action.object.next === 'inquire') {
       // Generate inquiry
@@ -53,6 +58,19 @@ async function submit(formData?: FormData, skip?: boolean) {
         ...aiState.get(),
         { role: 'assistant', content: `inquiry: ${inquiry?.question}` }
       ])
+      return
+    }
+
+    if (generateLiteratureReview) {
+      const literatureReview = await reviewer(uiStream, messages)
+
+      uiStream.done()
+      isGenerating.done()
+      aiState.done([
+        ...aiState.get(),
+        { role: 'assistant', content: `literatureReview: ${literatureReview}` }
+      ])
+
       return
     }
 

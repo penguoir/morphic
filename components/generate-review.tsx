@@ -9,7 +9,6 @@ import { WandSparkles } from 'lucide-react'
 import { LiteratureReview } from './literature-review'
 
 export function GenerateReview() {
-  const [input, setInput] = useState('You are the world\'s best AI research assistant. Write a complete literature review from the papers you have and the information you have gathered. Please do this using LaTeX.')
   const { submit } = useActions<typeof AI>()
   const [, setMessages] = useUIState<typeof AI>()
 
@@ -23,14 +22,12 @@ export function GenerateReview() {
       component: <LiteratureReview />
     }
 
-    const responseMessage = await submit(formData)
+    const responseMessage = await submit(formData, false, true)
     setMessages(currentMessages => [
       ...currentMessages,
       userMessage,
       responseMessage
     ])
-
-    setInput('')
   }
 
   return (
@@ -39,12 +36,8 @@ export function GenerateReview() {
         onSubmit={handleSubmit}
         className="w-1/2 relative flex items-center space-x-1"
       >
-        <Button
-          type="submit"
-          variant={'outline'}
-          className="border border-gray-300 rounded-lg px-4 py-2 text-sm font-medium leading-5 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          Generate
+        <Button type="submit" variant={'outline'}>
+          Generate PDF
           <WandSparkles size={18} className="ml-2" />
         </Button>
       </form>
