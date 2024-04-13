@@ -85,7 +85,7 @@ export async function researcher(
                 await exaSearch(query)
                 searchResult.results.forEach((result : any) => console.log(result.url))
                 const result = await requestPDF(searchResult.results[0].url)
-
+                    
           } catch (error) {
             console.error('Search API error:', error)
             hasError = true
@@ -101,15 +101,16 @@ export async function researcher(
             return searchResult
           }
 
+          // uiStream.update(
+          //   <Section title="Images">
+          //     <SearchResultsImageSection
+          //       images={searchResult.images}
+          //       query={searchResult.query}
+          //     />
+          //   </Section>
+          // )
+
           uiStream.update(
-            <Section title="Images">
-              <SearchResultsImageSection
-                images={searchResult.images}
-                query={searchResult.query}
-              />
-            </Section>
-          )
-          uiStream.append(
             <Section title="Papers">
               <SearchResults results={searchResult.results} />
             </Section>

@@ -18,7 +18,7 @@ export function SearchResults({ results }: SearchResultsProps) {
     setShowAllResults(true)
   }
 
-  const displayedResults = showAllResults ? results : results.slice(0, 3)
+  const displayedResults = showAllResults ? results : results.slice(0, 6)
   const additionalResultsCount = results.length > 3 ? results.length - 3 : 0
 
   return (
@@ -26,26 +26,29 @@ export function SearchResults({ results }: SearchResultsProps) {
       {displayedResults.map((result: any, index: any) => (
         <div className="w-1/2 md:w-1/4 p-1" key={index}>
           <Link href={result.url} passHref target="_blank">
-            <Card className="flex-1">
-              <CardContent className="p-2">
-                <p className="text-xs line-clamp-2">{result.content}</p>
-                <div className="mt-2 flex items-center space-x-2">
-                  <Avatar className="h-4 w-4">
-                    <AvatarImage
-                      src={`https://www.google.com/s2/favicons?domain=${
-                        new URL(result.url).hostname
-                      }`}
-                      alt={result.author}
-                    />
-                    <AvatarFallback>
-                      {new URL(result.url).hostname[0]}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="text-xs opacity-60 truncate">
-                    {new URL(result.url).hostname}
-                  </div>
+            <Card className="flex-1 flex">
+            <div className="border-l-2 border-gray-600 pl-2 flex items-center">
+              <input type="checkbox" checked/>
+            </div>
+            <CardContent className="p-2 flex-grow">
+              <p className="text-xs line-clamp-2">{result.content}</p>
+              <div className="mt-2 flex items-center space-x-2">
+                <Avatar className="h-4 w-4">
+                  <AvatarImage
+                    src={`https://www.google.com/s2/favicons?domain=${
+                      new URL(result.url).hostname
+                    }`}
+                    alt={result.author}
+                  />
+                  <AvatarFallback>
+                    {new URL(result.url).hostname[0]}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="text-xs opacity-60 truncate">
+                  {new URL(result.url).hostname}
                 </div>
-              </CardContent>
+              </div>
+            </CardContent>
             </Card>
           </Link>
         </div>
