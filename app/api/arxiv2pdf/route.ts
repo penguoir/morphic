@@ -1,10 +1,11 @@
-import fetch from 'node-fetch';
-import fs from 'fs/promises';  // Use the promise-based version of fs for better performance
+import { PDFDocument } from 'pdf-lib';
 
 export async function GET(request: Request) {
-
     const url = new URL(request.url);
-    const pdfUrl = url.searchParams.get('url')?.replace('/abs/', '/pdf/') + '.pdf';
+    let pdfUrl = url.searchParams.get('url')?.replace('/abs/', '/pdf/');
+    pdfUrl += pdfUrl?.endsWith('.pdf') ? '' : '.pdf';
+
+    console.log('Fetching PDF:', pdfUrl);
 
     if (!pdfUrl) {
         return new Response(JSON.stringify({ message: 'Invalid URL provided' }), {
@@ -20,15 +21,19 @@ export async function GET(request: Request) {
         }
 
         const arrayBuffer = await response.arrayBuffer();
-        const pdfBuffer = Buffer.from(arrayBuffer);
-        const pdfName = pdfUrl.split('/').pop() || 'downloaded.pdf';
+        const pdfDoc = await PDFDocument.load(arrayBuffer);
+        const firstPage = pdfDoc.getPages()[0];
+        const newPdfDoc = await PDFDocument.create();
+        const [importedPage] = await newPdfDoc.copyPages(pdfDoc, [0]);
+        newPdfDoc.addPage(importedPage);
 
-        const dir = `./public/pdfs`;
-        await fs.writeFile(`${dir}/${pdfName}`, pdfBuffer);
+        const pdfBytes = await newPdfDoc.save();
 
-        return new Response(JSON.stringify({ message: 'PDF saved successfully', pdfName }), {
+        return new Response(pdfBytes, {
             status: 200,
-            headers: { 'Content-Type': 'application/json' }
+            headers: {
+                'Content-Type': 'application/pdf'
+            }
         });
     } catch (error: any) {
         return new Response(JSON.stringify({ message: 'Error fetching PDF', error: error.message }), {
