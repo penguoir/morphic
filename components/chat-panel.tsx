@@ -7,6 +7,7 @@ import { Input } from './ui/input'
 import { Button } from './ui/button'
 import { ArrowRight, Plus, Square } from 'lucide-react'
 import { EmptyScreen } from './empty-screen'
+import { MathJaxContent } from './review-results'
 
 export function ChatPanel() {
   const [input, setInput] = useState('')
@@ -124,5 +125,6 @@ export function ChatPanel() {
         />
       </form>
     </div>
+    
   )
 }

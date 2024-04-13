@@ -7,12 +7,13 @@ import { ThemeProvider } from '@/components/theme-provider'
 import Header from '@/components/header'
 import Footer from '@/components/footer'
 
+
 const fontSans = FontSans({
   subsets: ['latin'],
   variable: '--font-sans'
 })
 
-const title = 'Morphic'
+const title = 'Acamorphic'
 const description =
   'A fully open-source AI-powered answer engine with a generative UI.'
 
