@@ -5,9 +5,9 @@ import {
   BookCheck,
   Image,
   MessageCircleMore,
-  Newspaper,
   Repeat2,
-  Search
+  Search,
+  BookOpenText
 } from 'lucide-react'
 import React from 'react'
 import { Separator } from './ui/separator'
@@ -33,8 +33,8 @@ export const Section: React.FC<SectionProps> = ({
       // eslint-disable-next-line jsx-a11y/alt-text
       icon = <Image size={18} className="mr-2" />
       break
-    case 'Sources':
-      icon = <Newspaper size={18} className="mr-2" />
+    case 'Papers':
+      icon = <BookOpenText size={18} className="mr-2" />
       break
     case 'Answer':
       icon = <BookCheck size={18} className="mr-2" />

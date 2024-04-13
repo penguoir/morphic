@@ -110,7 +110,7 @@ export async function researcher(
             </Section>
           )
           uiStream.append(
-            <Section title="Sources">
+            <Section title="Papers">
               <SearchResults results={searchResult.results} />
             </Section>
           )
