@@ -9,6 +9,7 @@ import { ExperimentalMessage } from 'ai'
 import { Spinner } from '@/components/ui/spinner'
 import { Section } from '@/components/section'
 import { FollowupPanel } from '@/components/followup-panel'
+import { GenerateReview } from '@/components/generate-review'
 import { inquire, researcher, taskManager, querySuggestor } from '@/lib/agents'
 
 async function submit(formData?: FormData, skip?: boolean) {
@@ -79,6 +80,12 @@ async function submit(formData?: FormData, skip?: boolean) {
       uiStream.append(
         <Section title="Follow-up">
           <FollowupPanel />
+        </Section>
+      )
+
+      uiStream.append(
+        <Section title="Review">
+          <GenerateReview />
         </Section>
       )
     }

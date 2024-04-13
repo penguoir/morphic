@@ -3,13 +3,12 @@
 import { useState } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
-import { Textarea } from './ui/textarea'
 import { useActions, useUIState } from 'ai/rsc'
 import type { AI } from '@/app/action'
 import { UserMessage } from './user-message'
-import { ArrowRight } from 'lucide-react'
+import { SparklesIcon } from 'lucide-react'
 
-export function FollowupPanel() {
+export function GenerateReview() {
   const [input, setInput] = useState('')
   const { submit } = useActions<typeof AI>()
   const [, setMessages] = useUIState<typeof AI>()
@@ -35,27 +34,20 @@ export function FollowupPanel() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="relative flex items-center space-x-1"
-    >
-      <Input
-        type="text"
-        name="input"
-        placeholder="Ask a follow-up question..."
-        value={input}
-        className="pr-14 h-12"
-        onChange={e => setInput(e.target.value)}
-      />
-      <Button
-        type="submit"
-        size={'icon'}
-        disabled={input.length === 0}
-        variant={'ghost'}
-        className="absolute right-1"
+    <div className="flex justify-start w-full">
+      <form
+        onSubmit={handleSubmit}
+        className="w-1/2 relative flex items-center space-x-1"
       >
-        <ArrowRight size={20} />
-      </Button>
-    </form>
+        <Button
+          type="submit"
+          variant={'outline'}
+          className="border border-gray-300 rounded-lg px-4 py-2 text-sm font-medium leading-5 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          <SparklesIcon size={20} className="mr-2" />
+          Generate
+        </Button>
+      </form>
+    </div>
   )
 }
