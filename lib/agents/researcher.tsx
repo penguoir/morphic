@@ -7,6 +7,7 @@ import {
 } from 'ai'
 import { searchSchema } from '@/lib/schema/search'
 import { Section } from '@/components/section'
+import { OpenAI } from 'ai/openai'
 import { ToolBadge } from '@/components/tool-badge'
 import { SearchSkeleton } from '@/components/search-skeleton'
 import { SearchResults } from '@/components/search-results'
@@ -15,99 +16,19 @@ import Exa from 'exa-js'
 import { SearchResultsImageSection } from '@/components/search-results-image'
 import { Card } from '@/components/ui/card'
 import { requestPDF } from '../utils/arxiv2pdf'
-import { LanguageModelV1 } from '@ai-sdk/provider'
-import { LanguageModelV1CallOptions, LanguageModelV1FinishReason, LanguageModelV1FunctionToolCall, LanguageModelV1CallWarning, LanguageModelV1StreamPart } from '@ai-sdk/provider'
-import { ChatOpenAI, ChatOpenAICallOptions } from '@langchain/openai'
-
-class ChatOpenAILanguageModelV1 extends ChatOpenAI<ChatOpenAICallOptions> implements LanguageModelV1 {
-  readonly specificationVersion = 'v1';
-  readonly provider = 'OpenAI';
-  readonly modelId: string;
-  readonly defaultObjectGenerationMode: 'json' | 'tool' | 'grammar' | undefined = 'json';
-
-  constructor(modelId: string = "gpt-3.5-turbo", options?: Partial<ChatOpenAICallOptions>) {
-      super({ model: modelId, ...options });
-      this.modelId = modelId;
-  }
-
-  async doGenerate(options: LanguageModelV1CallOptions): Promise<{
-      text?: string;
-      toolCalls?: Array<LanguageModelV1FunctionToolCall>;
-      finishReason: LanguageModelV1FinishReason;
-      usage: {
-          promptTokens: number;
-          completionTokens: number;
-      };
-      rawCall: {
-          rawPrompt: unknown;
-          rawSettings: Record<string, unknown>;
-      };
-      warnings?: LanguageModelV1CallWarning[];
-  }> {
-    return {
-      text: 'Not implemented.',
-      toolCalls: [],
-      finishReason: 'stop',
-      usage: {
-        promptTokens: 0,
-        completionTokens: 0
-      },
-      rawCall: {
-        rawPrompt: options.prompt,
-        rawSettings: options
-      },
-      warnings: []
-    }
-  }
-
-  async doStream(options: LanguageModelV1CallOptions): Promise<{
-      stream: ReadableStream<LanguageModelV1StreamPart>;
-      rawCall: {
-          rawPrompt: unknown;
-          rawSettings: Record<string, unknown>;
-      };
-      warnings?: LanguageModelV1CallWarning[];
-  }> {
-    const llm = new ChatOpenAI({ streaming: true })
-
-    return {
-        stream: new ReadableStream({
-            async start(controller) {
-              const stream = await llm.stream(
-                options.prompt.map((part) => {
-                  return [part.role, part.content]
-                })
-              )
-
-              const reader = stream.getReader()
-              
-              while (true) {
-                const result = await reader.read()
-
-                if (result.done) {
-                  break
-                }
-
-                controller.enqueue({ type: 'text-delta', textDelta: result.value.content.toString() })
-              }
-            }
-        }),
-        rawCall: {
-            rawPrompt: options.prompt,
-            rawSettings: options
-        },
-        warnings: []
-    };
-  }
-}
 
 export async function researcher(
   uiStream: ReturnType<typeof createStreamableUI>,
   streamText: ReturnType<typeof createStreamableValue<string>>,
   messages: ExperimentalMessage[]
 ) {
-  const model = new ChatOpenAILanguageModelV1();
-  const searchAPI: 'tavily' | 'exa' = 'tavily'
+  const openai = new OpenAI({
+    baseUrl: process.env.OPENAI_API_BASE, // optional base URL for proxies etc.
+    apiKey: process.env.OPENAI_API_KEY, // optional API key, default to env property OPENAI_API_KEY
+    organization: '' // optional organization
+  })
+
+  const searchAPI: 'tavily' | 'exa' = 'exa'
 
   let fullResponse = ''
   let hasError = false
@@ -118,7 +39,7 @@ export async function researcher(
   )
 
   const result = await experimental_streamText({
-    model: model,
+    model: openai.chat(process.env.OPENAI_API_MODEL || 'gpt-4-turbo'),
     maxTokens: 2500,
     system: `As a professional search expert, you possess the ability to search for any information on the web. 
     For each user query, utilize the search results to their fullest potential to provide additional information and assistance in your response.
