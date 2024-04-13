@@ -15,6 +15,7 @@ import { BotMessage } from '@/components/message'
 import Exa from 'exa-js'
 import { SearchResultsImageSection } from '@/components/search-results-image'
 import { Card } from '@/components/ui/card'
+import { requestPDF } from '../utils/arxiv2pdf'
 
 export async function researcher(
   uiStream: ReturnType<typeof createStreamableUI>,
@@ -83,7 +84,7 @@ export async function researcher(
                 // ? await tavilySearch(filledQuery, max_results, search_depth): 
                 await exaSearch(query)
                 searchResult.results.forEach((result : any) => console.log(result.url))
-                // const result = await ArxivPDF(searchResult.results[0].url)
+                const result = await requestPDF(searchResult.results[0].url)
 
           } catch (error) {
             console.error('Search API error:', error)
