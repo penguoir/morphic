@@ -27,7 +27,7 @@ export async function researcher(
     organization: '' // optional organization
   })
 
-  const searchAPI: 'tavily' | 'exa' = 'tavily'
+  const searchAPI: 'tavily' | 'exa' = 'exa'
 
   let fullResponse = ''
   let hasError = false
@@ -77,10 +77,14 @@ export async function researcher(
             query.length < 5 ? query + ' '.repeat(5 - query.length) : query
           let searchResult
           try {
+            // Changed to Exa API
             searchResult =
-              searchAPI === 'tavily'
-                ? await tavilySearch(filledQuery, max_results, search_depth)
-                : await exaSearch(query)
+              // searchAPI === 'tavily'
+                // ? await tavilySearch(filledQuery, max_results, search_depth): 
+                await exaSearch(query)
+                searchResult.results.forEach((result : any) => console.log(result.url))
+                // const result = await ArxivPDF(searchResult.results[0].url)
+
           } catch (error) {
             console.error('Search API error:', error)
             hasError = true
@@ -193,6 +197,8 @@ async function exaSearch(query: string, maxResults: number = 10): Promise<any> {
   const exa = new Exa(apiKey)
   return exa.searchAndContents(query, {
     highlights: true,
-    numResults: maxResults
+    numResults: maxResults,
+    category: 'papers',
+    includeDomains: ['https://arxiv.org/']
   })
 }

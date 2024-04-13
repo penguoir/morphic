@@ -3,20 +3,20 @@ import { ArrowRight } from 'lucide-react'
 
 const exampleMessages = [
   {
-    heading: 'Why is Nvidia growing rapidly?',
-    message: 'Why is Nvidia growing rapidly?'
+    heading: 'What is a Sliding Context Window in LLMs?',
+    message: 'Research papers related to what is a Sliding Context Window in Large Language Models?'
   },
   {
-    heading: 'Is the Apple Vision Pro worth buying?',
-    message: 'Is the Apple Vision Pro worth buying?'
+    heading: 'Applications of Reinforcement Learning on Human Feedback',
+    message: 'Research papers related to applications of Reinforcement Learning on Human Feedback'
   },
   {
-    heading: 'How does the Vercel AI SDK work?',
-    message: 'How does the Vercel AI SDK work?'
+    heading: 'Gene Editing Techniques: CRISPR-Cas9 Explained',
+    message: 'Research papers related to  Gene Editing Techniques: CRISPR-Cas9 Explained'
   },
   {
-    heading: 'Tesla vs Rivian',
-    message: 'Tesla vs Rivian'
+    heading: 'Quantum Computing: The Future of Processing Power',
+    message: 'Research papers related to Quantum Computing: The Future of Processing Power'
   }
 ]
 export function EmptyScreen({
