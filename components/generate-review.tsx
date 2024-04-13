@@ -7,10 +7,11 @@ import { useActions, useUIState } from 'ai/rsc'
 import type { AI } from '@/app/action'
 import { WandSparkles } from 'lucide-react'
 import { LiteratureReview } from './literature-review'
+import { litwriter } from '@/lib/agents'
 
 export function GenerateReview() {
-  const [input, setInput] = useState('You are the world\'s best AI research assistant. Write a complete literature review from the papers you have and the information you have gathered. Please do this using LaTeX.')
-  const { submit } = useActions<typeof AI>()
+  // const [input, setInput] = useState('You are the world\'s best AI research assistant. Write a complete literature review from the papers you have and the information you have gathered. Please do this using LaTeX.')
+  // const { submit } = useActions<typeof AI>()
   const [, setMessages] = useUIState<typeof AI>()
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -23,14 +24,14 @@ export function GenerateReview() {
       component: <LiteratureReview />
     }
 
-    const responseMessage = await submit(formData)
+    const responseMessage = await litwriter(formData)
     setMessages(currentMessages => [
       ...currentMessages,
       userMessage,
       responseMessage
     ])
 
-    setInput('')
+    // setInput('')
   }
 
   return (
