@@ -101,15 +101,15 @@ export async function researcher(
             return searchResult
           }
 
+          // uiStream.update(
+          //   <Section title="Images">
+          //     <SearchResultsImageSection
+          //       images={searchResult.images}
+          //       query={searchResult.query}
+          //     />
+          //   </Section>
+          // )
           uiStream.update(
-            <Section title="Images">
-              <SearchResultsImageSection
-                images={searchResult.images}
-                query={searchResult.query}
-              />
-            </Section>
-          )
-          uiStream.append(
             <Section title="Papers">
               <SearchResults results={searchResult.results} />
             </Section>
@@ -196,7 +196,7 @@ async function tavilySearch(
 async function exaSearch(query: string, maxResults: number = 10): Promise<any> {
   const apiKey = process.env.EXA_API_KEY
   const exa = new Exa(apiKey)
-  return exa.searchAndContents(query, {
+  return exa.searchAndContents(`${query} ONLY RETURN PDF PAPERS`, {
     highlights: true,
     numResults: maxResults,
     category: 'papers',

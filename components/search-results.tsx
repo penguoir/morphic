@@ -42,7 +42,7 @@ export function SearchResults({ results }: SearchResultsProps) {
 
   return (
     <div className="flex flex-wrap">
-      {displayedResults.map((result, index) => (
+      {displayedResults.filter(result => result.url.includes('arxiv.org/abs') || result.url.includes('arxiv.org/pdf')).map((result, index) => (
         <div className="w-1/2 md:w-1/4 p-1" key={index}>
           <Link href={result.url} passHref target="_blank">
             <Card className="flex-1">

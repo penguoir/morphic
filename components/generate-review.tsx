@@ -5,11 +5,11 @@ import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { useActions, useUIState } from 'ai/rsc'
 import type { AI } from '@/app/action'
-import { UserMessage } from './user-message'
-import { SparklesIcon } from 'lucide-react'
+import { WandSparkles } from 'lucide-react'
+import { LiteratureReview } from './literature-review'
 
 export function GenerateReview() {
-  const [input, setInput] = useState('')
+  const [input, setInput] = useState('You are the world\'s best AI research assistant. Write a complete literature review from the papers you have and the information you have gathered. Please do this using LaTeX.')
   const { submit } = useActions<typeof AI>()
   const [, setMessages] = useUIState<typeof AI>()
 
@@ -20,7 +20,7 @@ export function GenerateReview() {
     const userMessage = {
       id: Date.now(),
       isGenerating: false,
-      component: <UserMessage message={input} isFirstMessage={false} />
+      component: <LiteratureReview />
     }
 
     const responseMessage = await submit(formData)
@@ -44,8 +44,8 @@ export function GenerateReview() {
           variant={'outline'}
           className="border border-gray-300 rounded-lg px-4 py-2 text-sm font-medium leading-5 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
-          <SparklesIcon size={20} className="mr-2" />
           Generate
+          <WandSparkles size={18} className="ml-2" />
         </Button>
       </form>
     </div>

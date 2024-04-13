@@ -46,7 +46,7 @@ export const Section: React.FC<SectionProps> = ({
     case 'Follow-up':
       icon = <MessageCircleMore size={18} className="mr-2" />
       break
-    case 'Review':
+    case 'Literature Review':
       icon = <SparklesIcon size={18} className="mr-2" />
       break
     default:

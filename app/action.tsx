@@ -84,7 +84,7 @@ async function submit(formData?: FormData, skip?: boolean) {
       )
 
       uiStream.append(
-        <Section title="Review">
+        <Section title="Literature Review">
           <GenerateReview />
         </Section>
       )
