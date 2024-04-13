@@ -15,7 +15,8 @@ import { BotMessage } from '@/components/message'
 import Exa from 'exa-js'
 import { SearchResultsImageSection } from '@/components/search-results-image'
 import { Card } from '@/components/ui/card'
-import { requestPDF } from '../utils/arxiv2pdf'
+import { QdrantVectorStore } from "@langchain/community/vectorstores/qdrant";
+import { OpenAIEmbeddings } from "@langchain/openai";
 
 export async function researcher(
   uiStream: ReturnType<typeof createStreamableUI>,
@@ -27,8 +28,6 @@ export async function researcher(
     apiKey: process.env.OPENAI_API_KEY, // optional API key, default to env property OPENAI_API_KEY
     organization: '' // optional organization
   })
-
-  const searchAPI: 'tavily' | 'exa' = 'exa'
 
   let fullResponse = ''
   let hasError = false
@@ -50,7 +49,7 @@ export async function researcher(
     messages,
     tools: {
       search: {
-        description: 'Search the web for information',
+        description: 'Search the web for papers',
         parameters: searchSchema,
         execute: async ({
           query,
@@ -73,19 +72,12 @@ export async function researcher(
             </Section>
           )
 
-          // Tavily API requires a minimum of 5 characters in the query
-          const filledQuery =
-            query.length < 5 ? query + ' '.repeat(5 - query.length) : query
           let searchResult
+          let context
           try {
-            // Changed to Exa API
-            searchResult =
-              // searchAPI === 'tavily'
-                // ? await tavilySearch(filledQuery, max_results, search_depth): 
-                await exaSearch(query)
-                searchResult.results.forEach((result : any) => console.log(result.url))
-                const result = await requestPDF(searchResult.results[0].url)
-
+            searchResult = await exaSearch(query, max_results)
+            await registerDocumentsOnVectorDB(searchResult)
+            context = await loadRelevantDocuments(messages)
           } catch (error) {
             console.error('Search API error:', error)
             hasError = true
@@ -98,6 +90,7 @@ export async function researcher(
                 {`An error occurred while searching for "${query}".`}
               </Card>
             )
+
             return searchResult
           }
 
@@ -117,7 +110,7 @@ export async function researcher(
 
           uiStream.append(answerSection)
 
-          return searchResult
+          return context
         }
       }
     }
@@ -164,35 +157,6 @@ export async function researcher(
   return { result, fullResponse, hasError }
 }
 
-async function tavilySearch(
-  query: string,
-  maxResults: number = 10,
-  searchDepth: 'basic' | 'advanced' = 'basic'
-): Promise<any> {
-  const apiKey = process.env.TAVILY_API_KEY
-  const response = await fetch('https://api.tavily.com/search', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      api_key: apiKey,
-      query,
-      max_results: maxResults < 5 ? 5 : maxResults,
-      search_depth: searchDepth,
-      include_images: true,
-      include_answers: true
-    })
-  })
-
-  if (!response.ok) {
-    throw new Error(`Error: ${response.status}`)
-  }
-
-  const data = await response.json()
-  return data
-}
-
 async function exaSearch(query: string, maxResults: number = 10): Promise<any> {
   const apiKey = process.env.EXA_API_KEY
   const exa = new Exa(apiKey)
@@ -202,4 +166,29 @@ async function exaSearch(query: string, maxResults: number = 10): Promise<any> {
     category: 'papers',
     includeDomains: ['https://arxiv.org/']
   })
+}
+
+async function registerDocumentsOnVectorDB(searchResult: any) {
+    fetch("http://localhost:3000/api/embedding", {
+      method: "POST",
+      body: JSON.stringify({ urls: searchResult.results.map((result: any) => result.url) })
+    })
+}
+
+async function loadRelevantDocuments(messages: ExperimentalMessage[]) {
+    const context = messages.map((message: ExperimentalMessage) => message.content).join('\n')
+
+    const vectorDB = await QdrantVectorStore.fromExistingCollection(
+      new OpenAIEmbeddings(),
+        {
+            url: process.env.QDRANT_URL,
+            apiKey: process.env.QDRANT_API_KEY,
+            collectionName: 'arxiv-papers-1'
+        }
+    )
+
+    const embeddedContext = await new OpenAIEmbeddings().embedQuery(context)
+    const relevantDocuments = await vectorDB.similaritySearchVectorWithScore(embeddedContext, 10)
+
+    return relevantDocuments
 }
