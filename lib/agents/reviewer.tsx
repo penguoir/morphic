@@ -21,7 +21,7 @@ export async function reviewer(
       model: openai.chat(process.env.OPENAI_API_MODEL || 'gpt-4-turbo'),
       system: `You are an expert academic researcher. Your role is to generate a
       literature review using only information from the previous conversation.
-      Write the review in LaTeX`,
+      Write the review in git`,
       messages,
       schema: literatureReviewSchema
     })
@@ -36,7 +36,6 @@ export async function reviewer(
       .finally(() => {
         objectStream.done()
       })
-  
     return finalLiteratureReview
   }
   
