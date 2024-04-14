@@ -72,6 +72,10 @@ async function submit(formData?: FormData, skip?: boolean, generateLiteratureRev
 
       uiStream.append(
         <Section title="Literature Review">
+          <p className="text-sm text-gray-700 mb-2">
+            Using the papers and your past questions, generate a literature review in PDF format. 
+          </p>
+
           <GenerateReview />
         </Section>
       )
@@ -115,6 +119,10 @@ async function submit(formData?: FormData, skip?: boolean, generateLiteratureRev
 
       uiStream.append(
         <Section title="Literature Review">
+          <p className="text-sm text-gray-700 mb-2">
+            Using the papers and your past questions, generate a literature review in PDF format. 
+          </p>
+
           <GenerateReview />
         </Section>
       )

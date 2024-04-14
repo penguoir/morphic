@@ -19,7 +19,6 @@ export const LiteratureReview: React.FC<LiteratureReviewProps> = ({ literatureRe
 
   return (
     <div className="border border-gray-200 p-8 pb-16 rounded-md font-serif">
-      <h1 className="text-xl font-bold text-center mb-4">Literature Review</h1>
       <div className="mt-4">
         <MemoizedReactMarkdown className="prose-sm prose-neutral prose-a:text-accent-foreground/50">{data?.content}</MemoizedReactMarkdown>
       </div>
