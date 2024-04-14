@@ -10,7 +10,7 @@ import { Spinner } from '@/components/ui/spinner'
 import { Section } from '@/components/section'
 import { FollowupPanel } from '@/components/followup-panel'
 import { GenerateReview } from '@/components/generate-review'
-import { inquire, researcher, limitedResearcher, taskManager, querySuggestor, reviewer } from '@/lib/agents'
+import { inquire, researcher, taskManager, querySuggestor, reviewer } from '@/lib/agents'
 
 async function submit(formData?: FormData, skip?: boolean, generateLiteratureReview?: boolean) {
   'use server'
@@ -45,7 +45,6 @@ async function submit(formData?: FormData, skip?: boolean, generateLiteratureRev
 
     let action: any = { object: { next: 'proceed' } }
 
-
     // If the user skips the task, we proceed to the search
     if (!skip && !generateLiteratureReview) action = await taskManager(messages)
 
@@ -74,32 +73,10 @@ async function submit(formData?: FormData, skip?: boolean, generateLiteratureRev
 
       return
     }
-    const streamLimitedText = createStreamableValue<string>()
-    if (action.object.next === 'limit') {
-      // If the user skips the task, we proceed to the search
-      const { fullResponse, hasError } = await limitedResearcher(
-        uiStream,
-        streamLimitedText,
-        messages
-      )
-      if (hasError) {
-        uiStream.done()
-        isGenerating.done()
-        aiState.done([
-          ...aiState.get(),
-          { role: 'assistant', content: `Error occurred while generating the answer` }
-        ])
-        return
-      }
-      uiStream.done()
-      isGenerating.done()
-      aiState.done([...aiState.get(), { role: 'assistant', content: fullResponse }])
-      return
-    }
+
     //  Generate the answer
     let answer = ''
     let errorOccurred = false
-    console.log(messages)
     const streamText = createStreamableValue<string>()
     while (answer.length === 0) {
       // Search the web and generate the answer
