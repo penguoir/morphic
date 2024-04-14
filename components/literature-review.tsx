@@ -14,7 +14,6 @@ export const LiteratureReview: React.FC<LiteratureReviewProps> = ({ literatureRe
 
   console.log("Rendering LiteratureReview", { data, error, pending });
 
-  if (pending) return <div>Loading...</div>;
   if (error) return <div>Error: {JSON.stringify(error)}</div>;
   if (!data) return null;
 

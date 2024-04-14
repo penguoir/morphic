@@ -64,6 +64,18 @@ async function submit(formData?: FormData, skip?: boolean, generateLiteratureRev
     if (generateLiteratureReview) {
       const literatureReview = await reviewer(uiStream, messages)
 
+      uiStream.append(
+        <Section title="Follow-up">
+          <FollowupPanel />
+        </Section>
+      )
+
+      uiStream.append(
+        <Section title="Literature Review">
+          <GenerateReview />
+        </Section>
+      )
+
       uiStream.done()
       isGenerating.done()
       aiState.done([

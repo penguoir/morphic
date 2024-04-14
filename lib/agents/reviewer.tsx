@@ -21,11 +21,11 @@ export async function reviewer(
       model: openai.chat(process.env.OPENAI_API_MODEL || 'gpt-4-turbo'),
       system: `As a professional literature review researcher, your primary objective is to understand the research papers 
       the user has viewed and write a literature review based on the user's input. 
-      You must output the result in latex.
       It should be between 2000 and 3000 words and include a summary of the key points.
       You also need a section that discusses the strengths and weaknesses of the research papers.
       Finally, you should provide a conclusion that synthesizes the information and offers insights into the topic.
-      Remember to cite the sources of the research papers you reference in your literature review.
+      Remember to cite the sources of the research papers you reference in your
+      literature review. Use the Harvard referencing system. The last section should be a list of the sources you referenced.
      `,
       messages,
       schema: literatureReviewSchema
