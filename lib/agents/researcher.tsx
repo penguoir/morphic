@@ -77,7 +77,10 @@ export async function researcher(
           try {
             searchResult = await exaSearch(query, max_results)
             await registerDocumentsOnVectorDB(searchResult)
-            context = await loadRelevantDocuments(messages)
+
+            if (messages.filter((message) => message.role === 'user').length > 1) {
+              context = await loadRelevantDocuments(messages)
+            }
           } catch (error) {
             console.error('Search API error:', error)
             hasError = true
@@ -111,7 +114,7 @@ export async function researcher(
 
           uiStream.append(answerSection)
 
-          return context
+          return context || searchResult
         }
       }
     }
