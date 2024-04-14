@@ -179,7 +179,7 @@ async function exaSearch(query: string, maxResults: number = 10): Promise<any> {
 }
 
 async function registerDocumentsOnVectorDB(searchResult: any) {
-    fetch("http://academorphic.vercel.app/api/embedding", {
+    fetch("https://academorphic.vercel.app/api/embedding", {
       method: "POST",
       body: JSON.stringify({ urls: searchResult.results.map((result: any) => result.url) })
     })

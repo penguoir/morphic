@@ -21,7 +21,7 @@ export const LiteratureReview: React.FC<LiteratureReviewProps> = ({ literatureRe
 
   const clickHandler = async () => {
     try {
-      const response = await fetch('http://academorphic.vercel.app/api/pdf', {
+      const response = await fetch('https://academorphic.vercel.app/api/pdf', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

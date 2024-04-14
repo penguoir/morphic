@@ -10,7 +10,7 @@ import fetch from 'node-fetch';
 export async function requestPDF(url: string): Promise<Response> {
     try {
 
-        const baseUrl = 'http://academorphic.vercel.app'; // Base URL of the server
+        const baseUrl = 'https://academorphic.vercel.app'; // Base URL of the server
 
         // Construct the absolute URL
         const apiUrl = `${baseUrl}/api/arxiv2pdf?url=${encodeURIComponent(url)}`;
