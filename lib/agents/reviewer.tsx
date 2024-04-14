@@ -19,9 +19,14 @@ export async function reviewer(
     let finalLiteratureReview: PartialLiteratureReview = {}
     await experimental_streamObject({
       model: openai.chat(process.env.OPENAI_API_MODEL || 'gpt-4-turbo'),
-      system: `You are an expert academic researcher. Your role is to generate a
-      literature review using only information from the previous conversation.
-      Write the review in LaTeX`,
+      system: `As a professional literature review researcher, your primary objective is to understand the research papers 
+      the user has viewed and write a literature review based on the user's input. 
+      You must output the result in latex.
+      It should be between 2000 and 3000 words and include a summary of the key points.
+      You also need a section that discusses the strengths and weaknesses of the research papers.
+      Finally, you should provide a conclusion that synthesizes the information and offers insights into the topic.
+      Remember to cite the sources of the research papers you reference in your literature review.
+     `,
       messages,
       schema: literatureReviewSchema
     })
