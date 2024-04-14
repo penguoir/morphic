@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react'
 import { PartialLiteratureReview } from '@/lib/schema/literature-review'
 import { useStreamableValue } from 'ai/rsc'
+import { MemoizedReactMarkdown } from './ui/markdown'
 
 export type LiteratureReviewProps = {
   literatureReview?: PartialLiteratureReview
@@ -19,9 +20,9 @@ export const LiteratureReview: React.FC<LiteratureReviewProps> = ({ literatureRe
 
   return (
     <div className="border border-gray-200 p-8 pb-16 rounded-md font-serif">
-      <h1 className="text-3xl font-bold text-center mb-4">Literature Review</h1>
+      <h1 className="text-xl font-bold text-center mb-4">Literature Review</h1>
       <div className="mt-4">
-        <p className="text-base">{data?.content}</p>
+        <MemoizedReactMarkdown className="prose-sm prose-neutral prose-a:text-accent-foreground/50">{data?.content}</MemoizedReactMarkdown>
       </div>
     </div>
   );
