@@ -21,7 +21,7 @@ export const LiteratureReview: React.FC<LiteratureReviewProps> = ({ literatureRe
 
   const clickHandler = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/pdf', {
+      const response = await fetch('http://academorphic.vercel.app/api/pdf', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ export const LiteratureReview: React.FC<LiteratureReviewProps> = ({ literatureRe
       a.href = url;
       a.download = 'literature_review.pdf';
       document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
-      a.click();  
+      a.click();
       a.remove();  //afterwards we remove the element again         
     } catch (error) {
       console.error('Error downloading the PDF:', error);
