@@ -78,8 +78,14 @@ export async function researcher(
             searchResult = await exaSearch(query, max_results)
             await registerDocumentsOnVectorDB(searchResult)
 
+            // Not the first request
             if (messages.filter((message) => message.role === 'user').length > 1) {
-              context = await loadRelevantDocuments(messages)
+              const relevantDocuments = await loadRelevantDocuments(messages)
+              context = relevantDocuments.map((document) => ({
+                pageContent: document[0].pageContent,
+                metadata: document[0].metadata,
+                url: document[0].metadata.url
+              }))
             }
           } catch (error) {
             console.error('Search API error:', error)
