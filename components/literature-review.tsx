@@ -9,13 +9,20 @@ export type LiteratureReviewProps = {
 }
 
 export const LiteratureReview: React.FC<LiteratureReviewProps> = ({ literatureReview }: LiteratureReviewProps) => {
-  const streamableState = useStreamableValue<PartialLiteratureReview>(literatureReview);
+  const [data, error, pending] = useStreamableValue<PartialLiteratureReview>(literatureReview);
 
-  if (streamableState[1]) return <div>Loading...</div>;
+  console.log("Rendering LiteratureReview", { data, error, pending });
+
+  if (pending) return <div>Loading...</div>;
+  if (error) return <div>Error: {JSON.stringify(error)}</div>;
+  if (!data) return null;
 
   return (
-    <div className="pt-4 border-t border-gray-200 p-8">
-      {streamableState[0] ? streamableState[0].content : ""}
+    <div className="border border-gray-200 p-8 pb-16 rounded-md font-serif">
+      <h1 className="text-3xl font-bold text-center mb-4">Literature Review</h1>
+      <div className="mt-4">
+        <p className="text-base">{data?.content}</p>
+      </div>
     </div>
   );
 }
